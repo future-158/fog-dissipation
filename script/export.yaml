@@ -1,0 +1,28 @@
+workdir: /home/jhj/Proj/2021_seafog/dissipation_ml/script
+
+station: SF_0008
+pred_hour: 1
+target_name: hj_label_${pred_hour}
+fog_threahold: 1
+topk: 4
+time_limit: 300
+distill_time_limit: 60
+model_path: /mnt/synology/data/export_diss/${station}_${pred_hour}.onnx
+info_path: /mnt/synology/data/export_diss/${station}_${pred_hour}.json
+
+# model_path: /workspace/export_diss/${station}_${pred_hour}.onnx
+# info_path: /workspace/export_diss/${station}_${pred_hour}.json
+
+
+station_name:
+  SF_0001: 부산항
+  SF_0002: 부산항신항
+  SF_0003: 인천항
+  SF_0004: 평택당진항
+  SF_0005: 군산항
+  SF_0006: 대산항
+  SF_0007: 목포항
+  SF_0008: 여수광양항
+  SF_0009: 해운대
+  SF_0010: 울산항
+  SF_0011: 포항항
