@@ -7,3 +7,4 @@ torch>=1.0,<1.11+cpu
 --pre
 autogluon
 ipykernel
+awscli
