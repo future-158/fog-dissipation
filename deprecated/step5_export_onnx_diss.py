@@ -1,14 +1,3 @@
-"""
-CUDA_VISIBLE_DEVICES='2' taskset --cpu-list 80-100 python export_onnx_diss.py -m station=SF_0002,SF_0003,SF_0004,SF_0005,SF_0006,SF_0007,SF_0008,SF_0009 pred_hour=1,2,3
-(
-    docker run \
-    --shm-size 1g --gpus=device=5 \
-    --rm -it \
-    -v $PWD:/workspace -w /workspace \
-    autogluon/autogluon:0.3.1-rapids0.19-cuda10.2-jupyter-ubuntu18.04-py3.7 \
-    python export_onnx_diss.py
-    )
-"""
 import argparse
 import json
 import os
@@ -24,7 +13,6 @@ import onnxruntime as rt
 import pandas as pd
 from autogluon.core.utils import try_import_lightgbm
 from autogluon.tabular import TabularDataset, TabularPredictor
-# from networkx.algorithms.shortest_paths.weighted import johnson
 from omegaconf import DictConfig, OmegaConf
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
@@ -70,11 +58,6 @@ def main(cfg : DictConfig) -> None:
     print('train_ratio:\n',train_data['label'].value_counts())
     print('val_ratio:\n',val_data['label'].value_counts())
     print('test_ratio:\n',test_data.label.value_counts())
-
-    import time
-    time.sleep(5)
-
-    
 
     predictor = TabularPredictor(
         label=label, 

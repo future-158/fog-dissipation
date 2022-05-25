@@ -1,0 +1,9 @@
+name: fog_dissipation
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pip
+  - python=3.8
+  - pip:
+    - -r requirements.txt

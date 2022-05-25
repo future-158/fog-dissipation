@@ -23,9 +23,8 @@ from sklearn.metrics import (accuracy_score, confusion_matrix, f1_score,
 from sklearn.model_selection import GroupShuffleSplit
 
 
-
-def load_dataset(station:str = ''):
-    root = '/data/dataset/pois/data'
+def load_dataset(root: Path, station:str = ''):
+    root = root / 'data' / 'clean'
     vaisala_stations = ['인천항','평택당진항','부산항','부산항신항']
 
     if station in vaisala_stations:
@@ -172,8 +171,7 @@ def load_dataset(station:str = ''):
     return X,y, groups
 
 if __name__=='__main__':
-    cfg = OmegaConf.load('script/config.yaml')
-    
+    cfg = OmegaConf.load('config.yaml')
     stations = [
         # '부산항',
         '부산항신항',
@@ -188,35 +186,32 @@ if __name__=='__main__':
         # '포항항',
     ]
 
-    stat_dfs = []
+    rows = []
 
+    
     for station in stations:
         X, y, groups =  load_dataset(station = station)
+        row = y.sum()
+        row['count'] = y.shape[0]
+        row['station'] = station
+        rows.append(row)
 
-        latest = X.filter(like='lag0')
-        latest.columns = latest.columns.astype(str).str.replace('_lag0','')
-        latest = latest.assign(ws = lambda x: np.sqrt(x.eval('u**2 + v**2')))
+    stats = pd.DataFrame(rows)
+    id_vars = ['station']
+    value_vars = ['count', 'hj_label_1', 'hj_label_2', 'hj_label_3']
+    names = ['COUNT', '소산 1H', '소산 2H', '소산 3H']
 
-        value_vars = ['air_temp', 'humidity', 'sea_air_pre', 'sea_temp', 'ws', 'vis']
-        latest = latest[value_vars]
-        stat = latest.describe().loc[['min','mean','max']]
-        stat.index.name = 'agg_type'
-
-        stat = stat.reset_index()
-        stat['station_name'] = station
-
-        id_vars = ['station_name', 'agg_type']
-        melted = pd.melt(stat, id_vars=id_vars, value_vars=value_vars)
-
-        stat_dfs.append(melted)
-
-
-    stat_table = pd.concat(stat_dfs)
+    stats = stats.set_index(id_vars)[value_vars]
+    stats.columns = names
     dest = cfg.stat_dest
-    with pd.ExcelWriter(dest, mode='a') as writer:
-        stat_table.to_excel(writer, sheet_name='stat_table', index=False)
 
-    # stats.to_excel(dest)
+    stats = stats.reset_index()
+    table =stats
+    tag = 'stat'
+    version = '4'
+    sheet_name = f'{tag}_{version}'
+    with pd.ExcelWriter(dest, mode='a') as writer:
+        table.to_excel(writer, sheet_name=sheet_name, index=False)
     
 
 

@@ -4,6 +4,8 @@ data/
 __pycache__/
 *.py[cod]
 *$py.class
+multirun/
+outputs/
 
 # C extensions
 *.so

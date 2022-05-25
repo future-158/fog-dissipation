@@ -1,0 +1,9 @@
+-f https://download.pytorch.org/whl/cpu/torch_stable.html
+joblib
+hydra-core
+omegaconf
+scipy
+torch>=1.0,<1.11+cpu
+--pre
+autogluon
+ipykernel
